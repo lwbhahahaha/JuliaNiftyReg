@@ -66,6 +66,11 @@ function unzip_file(zip_filepath, output_directory)
         # Create the full path for the extracted file
         output_filepath = joinpath(output_directory, f.name)
         
+        if splitext(f.name)[end] == ""
+            isdir(output_filepath) || mkdir(output_filepath)
+            continue
+        end
+
         # Create any parent directories if they don't exist
         mkpath(dirname(output_filepath))
 
