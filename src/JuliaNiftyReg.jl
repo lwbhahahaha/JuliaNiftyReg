@@ -1,6 +1,6 @@
 module JuliaNiftyReg
 
-include("wenbo.jl")
+include("core.jl")
 
 export run_registration
 
