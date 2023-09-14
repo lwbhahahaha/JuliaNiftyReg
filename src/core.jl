@@ -16,6 +16,11 @@ begin
 	output_directory = joinpath(pkg_dir, "nift_reg_app")
 end;
 
+function init_()
+	# unzip file
+	isdir(output_directory) || unzip_file(zip_filepath, pkg_dir)
+end
+
 """
 	This function is a high-level wrapper function that wraps all other functions.
 	Call `run_registration(v1::Array{Int16, 3}, v2::Array{Int16, 3}, mask::Array{Bool, 3})`.
@@ -35,8 +40,6 @@ function run_registration(v1::Array{Int16, 3}, v2::Array{Int16, 3}, mask::BitArr
 	@assert num_slice_v1 == num_slice_v2 == num_slice_mask
 	@assert x1 == x2 == x3
 	@assert y1 == y2 == y3
-	# unzip file
-	isdir(output_directory) || unzip_file(zip_filepath, output_directory)
 	# get BB
 	BB = find_BB(mask, x1, y1, num_slice_v1, BB_offset)
 	# create cropped .nii temp_files
