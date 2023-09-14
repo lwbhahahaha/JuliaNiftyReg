@@ -52,6 +52,37 @@ function run_registration(v1::Array{Int16, 3}, v2::Array{Int16, 3}, mask::BitArr
 	if del_tmp_files
 		isdir(temp_dir) && remove_all_in_dir(temp_dir)
 	end
+	return output
+end
+
+function run_registration(v1::Array{Int16, 3}, v2::Array{Int16, 3}; del_tmp_files = false, stationary_acq = "v1")
+	# swap v1 or v2 if necessary
+	if stationary_acq == "v2"
+		temp = deepcopy(v1)
+		v1 = deepcopy(v2)
+		v2 = temp
+	end
+	# Check args
+	x1, y1, num_slice_v1 = size(v1)
+	x2, y2, num_slice_v2 = size(v2)
+	x3, y3, num_slice_mask = size(mask)
+	@assert num_slice_v1 == num_slice_v2 == num_slice_mask
+	@assert x1 == x2 == x3
+	@assert y1 == y2 == y3
+	# get BB
+	up, down, left, right
+	BB = [1, x1, 1, y1]
+	# create cropped .nii temp_files
+	crop_and_convert2nifty(v1, v2, BB)
+	# run
+	ApplyNiftyReg()
+	# get result
+	output = postprocess_and_save(BB, x1, y1, num_slice_v1)
+	# delete temp files
+	if del_tmp_files
+		isdir(temp_dir) && remove_all_in_dir(temp_dir)
+	end
+	return output
 end
 
 """
