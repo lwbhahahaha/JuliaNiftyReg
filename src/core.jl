@@ -50,8 +50,23 @@ function run_registration(v1::Array{Int16, 3}, v2::Array{Int16, 3}, mask::BitArr
 	output = postprocess_and_save(BB, x1, y1, num_slice_v1)
 	# delete temp files
 	if del_tmp_files
-		isdir(temp_dir) && rm(temp_dir)
+		isdir(temp_dir) && remove_all_in_dir(temp_dir)
 	end
+end
+
+"""
+	This function removes a dir and everything in it.
+"""
+function remove_all_in_dir(directory_path::String)
+	for (root, dirs, files) in walkdir(directory_path)
+		for file in files
+			rm(joinpath(root, file))
+		end
+		for dir in dirs
+			rm(joinpath(root, dir); recursive=true)
+		end
+	end
+	rm(directory_path)
 end
 
 """
