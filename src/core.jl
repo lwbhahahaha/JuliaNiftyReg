@@ -113,8 +113,8 @@ end
 """
 function ApplyNiftyReg()
 	temp_path = "temp_files"
-	v1_nii_path = abspath(joinpath(temp_path, "with_motion", "v1.nii"))
-	v2_nii_path = abspath(joinpath(temp_path, "with_motion", "v2.nii"))
+	v1_nii_path = abspath(joinpath(temp_path, "v1.nii"))
+	v2_nii_path = abspath(joinpath(temp_path, "v2.nii"))
 	aff_out_path = abspath(joinpath(temp_path, "aff.txt"))
 	aladin_out_path = abspath(joinpath(temp_path, "aladin.nii"))
 	cpp_out_path = abspath(joinpath(temp_path, "cpp.nii"))
