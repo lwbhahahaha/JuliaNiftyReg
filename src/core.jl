@@ -12,10 +12,10 @@ end;
 
 """
 	This function is a high-level wrapper function that wraps all other functions.
-	Call `run_registration(v1::Array{Float32, 3}, v2::Array{Float32, 3}, mask::Array{Bool, 3})`.
+	Call `run_registration(v1::Array{Int16, 3}, v2::Array{Int16, 3}, mask::Array{Bool, 3})`.
 	For `mask`, areas that need to get registered are with values = true.
 """
-function run_registration(v1::Array{Float32, 3}, v2::Array{Float32, 3}, mask::Array{Bool, 3}; BB_offset = 50, del_tmp_files = false, stationary_acq = "v1")
+function run_registration(v1::Array{Int16, 3}, v2::Array{Int16, 3}, mask::BitArray{3}; BB_offset = 50, del_tmp_files = false, stationary_acq = "v1")
 	# swap v1 or v2 if necessary
 	if stationary_acq == "v2"
 		temp = deepcopy(v1)
@@ -139,7 +139,7 @@ function postprocess_and_save(BB, x, y, l)
 
 	# correct orientation
 	up, down, left, right = BB
-	output = Array{Float32, 3}(undef, x, y, l)
+	output = Array{Int16, 3}(undef, x, y, l)
 	output[up:down, left:right, :] = rslt
 	return output
 end
