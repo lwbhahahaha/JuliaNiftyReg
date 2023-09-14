@@ -4,10 +4,12 @@ begin
 	using NIfTI
 
 	
-	niftyReg_path = joinpath("../nift_reg_app","bin")
+	pkg_dir = dirname(@__DIR__)
+	niftyReg_path = joinpath(pkg_dir, "nift_reg_app","bin")
 	# @assert isdir(niftyReg_path)
 	aladin_path = abspath(joinpath(niftyReg_path,"reg_aladin.exe"))
-	f3d_path = abspath(joinpath(niftyReg_path,"reg_f3d.exe"));
+	f3d_path = abspath(joinpath(niftyReg_path,"reg_f3d.exe"))
+	temp_dir = joinpath(pkg_dir,"temp_files");
 end;
 
 """
@@ -39,7 +41,7 @@ function run_registration(v1::Array{Int16, 3}, v2::Array{Int16, 3}, mask::BitArr
 	output = postprocess_and_save(BB, x1, y1, num_slice_v1)
 	# delete temp files
 	if del_tmp_files
-		isdir("temp_files") && rm("temp_files")
+		isdir(temp_dir) && rm(temp_dir)
 	end
 end
 
@@ -97,22 +99,22 @@ end
 """
 function crop_and_convert2nifty(v1_dicom, v2_dicom, BB)
 	# created path to save
-	isdir("temp_files") || mkdir("temp_files")
+	isdir(temp_dir) || mkdir(temp_dir)
 	# get BB
 	up, down, left, right = BB
 	# crop
 	v1_dicom_cropped = v1_dicom[up:down, left:right, :]
 	v2_dicom_cropped = v2_dicom[up:down, left:right, :]
 	# save
-	niwrite(joinpath("temp_files", "v1.nii"), NIfTI.NIVolume(v1_dicom_cropped))
-	niwrite(joinpath("temp_files", "v2.nii"), NIfTI.NIVolume(v2_dicom_cropped))
+	niwrite(joinpath(temp_dir, "v1.nii"), NIfTI.NIVolume(v1_dicom_cropped))
+	niwrite(joinpath(temp_dir, "v2.nii"), NIfTI.NIVolume(v2_dicom_cropped))
 end
 
 """
 	This function wraps NiftyReg.
 """
 function ApplyNiftyReg()
-	temp_path = "temp_files"
+	temp_path = temp_dir
 	v1_nii_path = abspath(joinpath(temp_path, "v1.nii"))
 	v2_nii_path = abspath(joinpath(temp_path, "v2.nii"))
 	aff_out_path = abspath(joinpath(temp_path, "aff.txt"))
@@ -134,7 +136,7 @@ end
 	This function corrects the orientation of images and save them.
 """
 function postprocess_and_save(BB, x, y, l)
-	out_path = joinpath("temp_files", "registered.nii")
+	out_path = joinpath(temp_dir, "registered.nii")
 	rslt = niread(out_path)
 
 	# correct orientation
