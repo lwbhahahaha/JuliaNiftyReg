@@ -15,7 +15,7 @@ end;
 	Call `run_registration(v1::Array{Int16, 3}, v2::Array{Int16, 3}, mask::Array{Bool, 3})`.
 	For `mask`, areas that need to get registered are with values = true.
 """
-function run_registration(v1::Array{Int16, 3}, v2::Array{Int16, 3}, ::BitArray{3}; BB_offset = 50, del_tmp_files = false, stationary_acq = "v1")
+function run_registration(v1::Array{Int16, 3}, v2::Array{Int16, 3}, mask::BitArray{3}; BB_offset = 50, del_tmp_files = false, stationary_acq = "v1")
 	# swap v1 or v2 if necessary
 	if stationary_acq == "v2"
 		temp = deepcopy(v1)
