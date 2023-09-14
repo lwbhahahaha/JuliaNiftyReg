@@ -6,7 +6,7 @@ begin
 	
 	pkg_dir = dirname(@__DIR__)
 	niftyReg_path = joinpath(pkg_dir, "nift_reg_app","bin")
-	# @assert isdir(niftyReg_path)
+	@assert isdir(niftyReg_path)
 	aladin_path = abspath(joinpath(niftyReg_path,"reg_aladin.exe"))
 	f3d_path = abspath(joinpath(niftyReg_path,"reg_f3d.exe"))
 	temp_dir = joinpath(pkg_dir,"temp_files");
